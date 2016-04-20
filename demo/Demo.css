@@ -1,0 +1,11 @@
+.app {
+  background-color: green;
+  width: '50%';
+  margin: 'auto';
+  border: 1px solid blue;
+}
+
+.bap {
+  background-color: red;
+  height: 25px;
+}
