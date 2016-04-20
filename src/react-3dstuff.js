@@ -19,13 +19,14 @@ export default class Carousel3D extends React.Component {
 			angle: 0,
 			circumference: 0,
 			clickSafe: true,
-			currentPanelIndex: this.props.panelIndex,
+			jumpingToIndex: this.props.panelIndex,
 			dragging: false,
 			containerWidth: 0,
       left: 0,
 			mouse: [0, 0],
 			delta: [0, 0],
 			omega: 0,
+			frictionFactor: 100,
       panelCount: 0,
       panelSize: 0,
 			radius: 0,
@@ -35,7 +36,11 @@ export default class Carousel3D extends React.Component {
       top: 0,
 			atRest: true,
 		};
-
+		/*
+		* omega: angular velocity
+		* frictionFactor: coefficient (f) of acceleration due to friction
+		*			ie: change in omega = f * omega
+		*/
 
 
 		// bind instance methods
@@ -45,12 +50,8 @@ export default class Carousel3D extends React.Component {
 			'getCarouselStyles',
 			'getPanelStyles',
 			'handleClick',
-			'handleMouseDown',
-			'handleMouseMove',
-			'handleMouseUp',
-			'handleTouchMove',
-			'handleTouchStart',
 			'nearestPanelAngle',
+			'nextPanelAngle',
 			'getTouchEvents',
 			'getMouseEvents'
 		].forEach( (method) => this[method] = this[method].bind(this) );
@@ -75,21 +76,7 @@ export default class Carousel3D extends React.Component {
 	}
 
 	componentDidMount() {
-
-		// window.addEventListener('touchmove', this.handleTouchMove);
-		// window.addEventListener('touchend', this.handleMouseUp);
-		// window.addEventListener('touchcancel', this.handleMouseUp);
-		// window.addEventListener('mousemove', this.handleMouseMove);
-		// window.addEventListener('mouseup', this.handleMouseUp);
-		// window.addEventListener('mouseleave', this.handleMouseUp);
-
 		this.setup();
-		// add event handlers such as:
-		// such as window resize and adding more children, etc.
-		//
-		// this.bindEvents();
-		// this.setExternalData();
-
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -98,7 +85,8 @@ export default class Carousel3D extends React.Component {
 		});
 		this.setup();
 		if (nextProps.panelIndex !== this.state.currentPanelIndex) {
-			this.goToPanel(nextProps.panelIndex);
+			// this.goToPanel(nextProps.panelIndex);
+			this.state.jumpingToIndex = nextProps.panelIndex;
 		}
 	}
 
@@ -114,10 +102,11 @@ export default class Carousel3D extends React.Component {
 				rotateY: this.state.thetaY
 			}
 		} else {
-			angle = this.nearestPanelAngle();
+
+			angle = this.state.jumpingToIndex ? this.nextPanelAngle() : this.nearestPanelAngle();
 			style = {
-				rotateX: spring(0, {stiffness: 180, damping: 10} ),
-				rotateY: spring(angle, {stiffness: 120, damping: 17} ),
+				rotateX: spring(0, {stiffness: this.props.stiffness, damping:  this.props.damping} ),
+				rotateY: spring(angle, {stiffness: this.props.stiffness, damping: this.props.damping} ),
 			}
 		}
 
@@ -168,7 +157,8 @@ export default class Carousel3D extends React.Component {
       containerWidth,
       containerHeight,
 			offset,
-			rotation;
+			friction;
+
 
     container = this.refs.carousel3d;
 		panelCount = React.Children.count(this.props.children);
@@ -192,11 +182,14 @@ export default class Carousel3D extends React.Component {
 		panelSize = firstPanel[offset];
 
 		// compute radius
-
 		radius = Math.round((panelSize / 2) / Math.tan( Math.PI / panelCount));
     // containerHeight = panelHeight;
     // containerWidth = this.props.vertical ? containerHeight : container.offsetWidth;
 
+		// switch (this.props.friction) {
+		// 	case 'low':
+		//
+		// }
 
     this.setState({
       // containerWidth: containerWidth,
@@ -213,11 +206,16 @@ export default class Carousel3D extends React.Component {
 
 	nearestPanelAngle() {
 		if (this.props.orientation === 'horizontal') {
+
 			return Math.round(this.state.thetaY / this.state.angle) * this.state.angle;
 		} else {
 			return Math.round(this.state.thetaX / this.state.angle) * this.state.angle;
 
 		}
+	}
+
+	nextPanelAngle(idx) {
+		return this.state.angle * this.state.jumpingToIndex;
 	}
 
   getContainerStyles() {
@@ -270,20 +268,45 @@ export default class Carousel3D extends React.Component {
 		}
 	}
 
-	getTouchEvents() {
+	getTouchEvents(e) {
 		const self = this;
 		return {
 			onTouchStart(e) {
 				console.log('touch start');
+				self.setState({
+		      dragging: true,
+					jumpingToIndex: null,
+		      mouse: [e.touches[0].pageX, e.touches[0].pageY]
+		    });
 			},
 			onTouchMove(e) {
 				console.log('touch move');
+				if (!self.state.dragging) {
+          return;
+        }
+
+		    if (self.state.dragging) {
+		      const mouse = [e.touches[0].pageX, e.touches[0].pageY];
+					const mouseDelta = [mouse[0] - self.state.mouse[0], mouse[1] - self.state.mouse[1]];
+		      const deltaThetaY = mouseDelta[0] * 360 / self.state.circumference;
+					const deltaThetaX = mouseDelta[1] * 360 / self.state.circumference;
+
+					console.log(mouseDelta);
+					self.setState({
+						mouse: mouse,
+						thetaX: (self.state.thetaX + deltaThetaX) % 360,
+						thetaY: (self.state.thetaY + deltaThetaY) % 360,
+						atRest: false
+					});
+		    }
 			},
 			onTouchEnd(e) {
 				console.log('touch end');
+				self.setState({ dragging: false });
 			},
 			onTouchCancel(e) {
 				console.log('touch cancel');
+				self.setState({ dragging: false });
 			}
 		}
 	}
@@ -300,6 +323,7 @@ export default class Carousel3D extends React.Component {
 				console.log('mouse down');
 				self.setState({
 		      dragging: true,
+					jumpingToIndex: null,
 		      mouse: [e.clientX, e.clientY]
 		    });
       },
@@ -331,13 +355,10 @@ export default class Carousel3D extends React.Component {
       onMouseUp(e) {
 				console.log('mouse up');
 				self.setState({ dragging: false });
-
-
       },
       onMouseLeave(e) {
 				console.log('mouse leave');
 				self.setState({ dragging: false });
-
       }
     }
   }
@@ -352,46 +373,6 @@ export default class Carousel3D extends React.Component {
         e.nativeEvent.stopPropagation();
       }
     }
-  }
-
-	handleTouchStart(key, pressLocation, e) {
-
-    this.handleMouseDown(key, pressLocation, e.touches[0]);
-  }
-
-  handleTouchMove(e) {
-    e.preventDefault();
-    this.handleMouseMove(e.touches[0]);
-  }
-
-  handleMouseMove({pageX, pageY}) {
-		const delta = this.state.delta;
-    if (this.state.dragging) {
-      const mouse = [pageX - delta[0], pageY - delta[1]];
-			const mouseDelta = [mouse[0] - this.state.mouse[0], mouse[1] - this.state.mouse[1]];
-      const deltaThetaY = mouseDelta[0] * 360 / this.state.circumference;
-			const deltaThetaX = mouseDelta[1] * 360 / this.state.circumference;
-
-			console.log(mouseDelta);
-			this.setState({
-				mouse: mouse,
-				thetaX: (this.state.thetaX + deltaThetaX) % 360,
-				thetaY: (this.state.thetaY + deltaThetaY) % 360
-			});
-    }
-  }
-
-  handleMouseDown([pressX, pressY], {pageX, pageY}) {
-    this.setState({
-      dragging: true,
-      delta: [pageX - pressX, pageY - pressY],
-      mouse: [pressX, pressY],
-    });
-  }
-
-  handleMouseUp() {
-		console.log('up');
-    this.setState({dragging: false, delta: [0, 0]});
   }
 
 }
@@ -421,7 +402,8 @@ Carousel3D.propTypes = {
   draggable: React.PropTypes.bool,
   easing: React.PropTypes.string,
   containerPadding: React.PropTypes.string,
-	frictionFactor: React.PropTypes.number,
+	stiffness: React.PropTypes.number,
+	damping: React.PropTypes.number,
 	height: React.PropTypes.string,
 	momentum: React.PropTypes.bool,
   orientation: React.PropTypes.oneOf(['horizontal', 'vertical']),
@@ -444,7 +426,8 @@ Carousel3D.defaultProps = {
 	draggable: true,
 	easing: 'easeOutCirc',
 	containerPadding: '0px',
-	frictionFactor: 1,
+	stiffness: 120,
+	damping: 7,
 	height: '100%',
 	momentum: true,
 	orientation: 'horizontal',

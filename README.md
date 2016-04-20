@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # webpack-express-boilerplate
 A boilerplate for running a Webpack workflow in Node express
 =======
@@ -25,4 +25,3 @@ npm start
 ```
 
 Go to 'http://localhost:3000' and you should see the app running!
->>>>>>> e61978b... initial commit.

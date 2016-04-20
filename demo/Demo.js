@@ -5,37 +5,72 @@ import Carousel3D from '../src/react-3dstuff';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {test: 'foo'};
+    this.state = {
+      test: 'foo',
+      index: 0
+    };
   }
-  /*
-  * right now you need to set draggable="false"
-  *
-  * user-drag: none;
-  * user-select: none;
-  * -moz-user-select: none;
-  * -webkit-user-drag: none;
-  * -webkit-user-select: none;
-  * -ms-user-select: none;
-  */
+
+  onSubmit(e) {
+    let value;
+    e.preventDefault();
+    value = parseInt(e.target.childNodes[1].value);
+
+    console.log(value);
+    this.setState({
+      index: value
+    });
+  }
+
   render() {
     return (
       <div className={styles.app}>
         bar {this.state.test}
-        <Carousel3D ref="carousel" height="400px" width="1000px">
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide1"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide2"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide3"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide4"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide5"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide6"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide7"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide8"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide9"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide10"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide11"/>
-        <img draggable="false" src="http://placehold.it/1000x400&text=slide12"/>
-
+        <Carousel3D ref="carousel"
+          height="400px" width="1000px"
+          orientation="horizontal"
+          panelIndex={this.state.index}>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=1"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=2"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=3"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=4"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=5"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=6"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=7"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=8"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=9"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=10"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=11"/>
+          <img className={styles.slide}
+            draggable="false"
+            src="http://placehold.it/1000x400&text=12"/>
         </Carousel3D>
+        <form className={styles.slideNav} onSubmit={this.onSubmit.bind(this)}>
+          <label for="get-panel">go to: </label>
+          <input type="number" name="get-panel" />
+        </form>
       </div>
     );
   }
