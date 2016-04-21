@@ -11,14 +11,26 @@ export default class App extends React.Component {
     };
   }
 
-  onSubmit(e) {
+  _onSubmit(e) {
     let value;
     e.preventDefault();
     value = parseInt(e.target.childNodes[1].value);
-
-    console.log(value);
     this.setState({
       index: value
+    });
+  }
+
+  _goToNext(e) {
+    // e.preventDefault();
+    this.setState({
+      index: 'next'
+    });
+  }
+
+  _goToPrev(e) {
+    e.preventDefault();
+    this.setState({
+      index: 'prev'
     });
   }
 
@@ -67,10 +79,13 @@ export default class App extends React.Component {
             draggable="false"
             src="http://placehold.it/1000x400&text=12"/>
         </Carousel3D>
-        <form className={styles.slideNav} onSubmit={this.onSubmit.bind(this)}>
-          <label for="get-panel">go to: </label>
+        <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
+          <label htmlFor="get-panel">go to: </label>
           <input type="number" name="get-panel" />
         </form>
+        <button onClick={this._goToNext.bind(this)}>+</button>
+        <button onClick={this._goToPrev.bind(this)}>-</button>
+
       </div>
     );
   }

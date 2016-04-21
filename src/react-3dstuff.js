@@ -72,6 +72,13 @@ export default class Carousel3D extends React.Component {
 				thetaY: this.nearestPanelAngle(),
 				atRest: true
 			});
+		} else if (this.state.jumpingToIndex){
+			this.setState({
+				thetaX: 0,
+				thetaY: this.nextPanelAngle(),
+				atRest: true,
+				jumpingToIndex: null
+			});
 		}
 	}
 
@@ -214,8 +221,19 @@ export default class Carousel3D extends React.Component {
 		}
 	}
 
-	nextPanelAngle(idx) {
-		return this.state.angle * this.state.jumpingToIndex;
+	nextPanelAngle() {
+		if (typeof this.state.jumpingToIndex === 'number'){
+			return this.state.angle * this.state.jumpingToIndex;
+		}
+
+		let angle = this.props.orientation === 'horizontal' ? this.state.thetaY : this.state.thetaY;
+
+		if (this.state.jumpingToIndex === 'next') {
+			return angle - this.state.angle;
+		}
+		if (this.state.jumpingToIndex === 'prev') {
+			return angle + this.state.angle;
+		}
 	}
 
   getContainerStyles() {
@@ -407,7 +425,10 @@ Carousel3D.propTypes = {
 	height: React.PropTypes.string,
 	momentum: React.PropTypes.bool,
   orientation: React.PropTypes.oneOf(['horizontal', 'vertical']),
-  panelIndex: React.PropTypes.number,
+  panelIndex: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.number
+  ]),
   panelPadding: React.PropTypes.number,
   panelSize: React.PropTypes.oneOfType([
     React.PropTypes.string,
