@@ -1,6 +1,7 @@
 /*
 * to do:
-*		- handle touch
+*		- handle touch (DONE)
+* 	- update with new props for controls
 *		-	enter/leave callbacks
 *		- more styling control (props?)
 *		- allow for vertical orientation
@@ -10,7 +11,6 @@
 
 import React from 'react';
 import {Motion, spring} from 'react-motion';
-
 
 export default class Carousel3D extends React.Component {
 	constructor(props) {
@@ -392,7 +392,6 @@ export default class Carousel3D extends React.Component {
       }
     }
   }
-
 }
 
 Carousel3D.propTypes = {

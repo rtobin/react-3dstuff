@@ -20,6 +20,15 @@ export default class App extends React.Component {
     });
   }
 
+  _goToSlide(e) {
+    let value;
+    e.preventDefault();
+    value = parseInt(e.target.textContent);
+    this.setState({
+      index: value
+    });
+  }
+
   _goToNext(e) {
     // e.preventDefault();
     this.setState({
@@ -35,6 +44,7 @@ export default class App extends React.Component {
   }
 
   render() {
+    const self = this;
     return (
       <div className={styles.app}>
         bar {this.state.test}
@@ -81,11 +91,18 @@ export default class App extends React.Component {
         </Carousel3D>
         <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
           <label htmlFor="get-panel">go to: </label>
-          <input type="number" name="get-panel" />
+          <input type="number" min="0" step="1" name="get-panel" />
         </form>
         <button onClick={this._goToNext.bind(this)}>+</button>
         <button onClick={this._goToPrev.bind(this)}>-</button>
+        <div className="many-buttons">
+          {[1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
+            return (
+              <button key={idx} onClick={self._goToSlide.bind(self)}>{idx}</button>
 
+            );
+          })}
+        </div>
       </div>
     );
   }
