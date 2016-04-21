@@ -110,7 +110,7 @@ export default class Carousel3D extends React.Component {
 			}
 		} else {
 
-			angle = this.state.jumpingToIndex ? this.nextPanelAngle() : this.nearestPanelAngle();
+			angle = this.state.jumpingToIndex !== null ? this.nextPanelAngle() : this.nearestPanelAngle();
 			style = {
 				rotateX: spring(0, {stiffness: this.props.stiffness, damping:  this.props.damping} ),
 				rotateY: spring(angle, {stiffness: this.props.stiffness, damping: this.props.damping} ),
@@ -223,7 +223,7 @@ export default class Carousel3D extends React.Component {
 
 	nextPanelAngle() {
 		if (typeof this.state.jumpingToIndex === 'number'){
-			return this.state.angle * this.state.jumpingToIndex;
+			return (-1) * this.state.angle * this.state.jumpingToIndex;
 		}
 
 		let angle = this.props.orientation === 'horizontal' ? this.state.thetaY : this.state.thetaY;

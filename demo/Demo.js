@@ -6,7 +6,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: 'foo',
+      title: 'foo',
       index: 0
     };
   }
@@ -22,15 +22,15 @@ export default class App extends React.Component {
 
   _goToSlide(e) {
     let value;
-    e.preventDefault();
-    value = parseInt(e.target.textContent);
+    // e.preventDefault();
+    value = parseInt(e.target.textContent) - 1;
     this.setState({
       index: value
     });
   }
 
   _goToNext(e) {
-    // e.preventDefault();
+    e.preventDefault();
     this.setState({
       index: 'next'
     });
@@ -47,7 +47,8 @@ export default class App extends React.Component {
     const self = this;
     return (
       <div className={styles.app}>
-        bar {this.state.test}
+        <h1>Carousel3D Demo</h1>
+        <p>Use the mouse to manipulate the carousel or the nav buttons.</p>
         <Carousel3D ref="carousel"
           height="400px" width="1000px"
           orientation="horizontal"
@@ -93,8 +94,8 @@ export default class App extends React.Component {
           <label htmlFor="get-panel">go to: </label>
           <input type="number" min="0" step="1" name="get-panel" />
         </form>
-        <button onClick={this._goToNext.bind(this)}>+</button>
         <button onClick={this._goToPrev.bind(this)}>-</button>
+        <button onClick={this._goToNext.bind(this)}>+</button>
         <div className="many-buttons">
           {[1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
             return (
