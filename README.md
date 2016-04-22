@@ -26,7 +26,7 @@ The carousel updates as certain props are handed to it. For example, the prop 'p
 ```js
 _goToSlide(e) {
   let value;
-  // e.preventDefault();
+  e.preventDefault();
   value = parseInt(e.target.textContent) - 1;
   this.setState({
     index: value
