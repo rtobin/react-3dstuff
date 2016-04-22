@@ -57,40 +57,41 @@ export default class App extends React.Component {
           panelIndex={this.state.index}>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=1"/>
+            src="https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=2"/>
+            src="https://upload.wikimedia.org/wikipedia/en/a/aa/Bart_Simpson_200px.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=3"/>
+            src="https://upload.wikimedia.org/wikipedia/en/0/0b/Marge_Simpson.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=4"/>
+            src="http://vignette3.wikia.nocookie.net/simpsons/images/6/6a/Mr_Burns_evil.gif/revision/latest/scale-to-width-down/180?cb=20100702150413"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=5"/>
+            src="https://upload.wikimedia.org/wikipedia/en/e/ec/Lisa_Simpson.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=6"/>
+            src="https://upload.wikimedia.org/wikipedia/en/8/8d/Milhouse.PNG"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=7"/>
+            src="https://upload.wikimedia.org/wikipedia/en/8/80/Moe_Szyslak.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=8"/>
+            src="https://upload.wikimedia.org/wikipedia/en/8/84/Ned_Flanders.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=9"/>
+            src="https://upload.wikimedia.org/wikipedia/en/2/23/Apu_Nahasapeemapetilon_(The_Simpsons).png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=10"/>
+            src="https://upload.wikimedia.org/wikipedia/en/5/5a/Krustytheclown.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=11"/>
+            src="https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png"/>
           <img className={styles.slide}
             draggable="false"
-            src="http://placehold.it/1000x400&text=12"/>
+            src="https://upload.wikimedia.org/wikipedia/en/d/de/Barney_Gumble.png"/>
+
         </Carousel3D>
         <div className={styles.controls}>
           <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
