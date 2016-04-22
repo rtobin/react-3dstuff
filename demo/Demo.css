@@ -1,9 +1,20 @@
 .app {
-  background-color: green;
   width: '100%';
   margin: 'auto';
-  border: 1px solid blue;
   padding-top: 50px;
+}
+
+.title {
+  width: '100%';
+  margin: 'auto';
+  margin-bottom: 20px;
+}
+
+.controls {
+  width: '100%';
+  margin: 'auto';
+  margin-top: 50px;
+  text-align: center;
 }
 
 .bap {
