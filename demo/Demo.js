@@ -52,7 +52,7 @@ export default class App extends React.Component {
           <p>Use the mouse to manipulate the carousel or the nav buttons.</p>
         </div>
         <Carousel3D ref="carousel"
-          height="400px" width="1000px"
+          height="400px" width="400px"
           orientation="horizontal"
           panelIndex={this.state.index}>
           <img className={styles.slide}
