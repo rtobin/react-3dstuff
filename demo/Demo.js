@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Demo.css';
-import Carousel3D from '../src/react-3dstuff';
+import Carousel3D from '../src/carousel3d';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export default class App extends React.Component {
   _onSubmit(e) {
     let value;
     e.preventDefault();
-    value = parseInt(e.target.childNodes[1].value);
+    value = parseInt(e.target.childNodes[1].value) - 1;
     this.setState({
       index: value
     });
@@ -92,17 +92,18 @@ export default class App extends React.Component {
         </Carousel3D>
         <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
           <label htmlFor="get-panel">go to: </label>
-          <input type="number" min="0" step="1" name="get-panel" />
+          <input type="number" min="1" max="12" step="1" name="get-panel" />
         </form>
         <button onClick={this._goToPrev.bind(this)}>-</button>
         <button onClick={this._goToNext.bind(this)}>+</button>
         <div className="many-buttons">
-          {[1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
-            return (
-              <button key={idx} onClick={self._goToSlide.bind(self)}>{idx}</button>
-
-            );
-          })}
+          {
+            [1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
+              return (
+                <button key={idx} onClick={self._goToSlide.bind(self)}>{idx}</button>
+              );
+            })
+          }
         </div>
       </div>
     );
