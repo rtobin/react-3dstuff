@@ -47,8 +47,10 @@ export default class App extends React.Component {
     const self = this;
     return (
       <div className={styles.app}>
-        <h1>Carousel3D Demo</h1>
-        <p>Use the mouse to manipulate the carousel or the nav buttons.</p>
+        <div className={styles.title}>
+          <h1>Carousel3D Demo</h1>
+          <p>Use the mouse to manipulate the carousel or the nav buttons.</p>
+        </div>
         <Carousel3D ref="carousel"
           height="400px" width="1000px"
           orientation="horizontal"
@@ -90,20 +92,22 @@ export default class App extends React.Component {
             draggable="false"
             src="http://placehold.it/1000x400&text=12"/>
         </Carousel3D>
-        <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
-          <label htmlFor="get-panel">go to: </label>
-          <input type="number" min="1" max="12" step="1" name="get-panel" />
-        </form>
-        <button onClick={this._goToPrev.bind(this)}>-</button>
-        <button onClick={this._goToNext.bind(this)}>+</button>
-        <div className="many-buttons">
-          {
-            [1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
-              return (
-                <button key={idx} onClick={self._goToSlide.bind(self)}>{idx}</button>
-              );
-            })
-          }
+        <div className={styles.controls}>
+          <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
+            <label htmlFor="get-panel">go to: </label>
+            <input type="number" min="1" max="12" step="1" name="get-panel" />
+          </form>
+          <button onClick={this._goToPrev.bind(this)}>-</button>
+          <button onClick={this._goToNext.bind(this)}>+</button>
+          <div className="many-buttons">
+            {
+              [1,2,3,4,5,6,7,8,9,10,11,12].map(function(idx) {
+                return (
+                  <button key={idx} onClick={self._goToSlide.bind(self)}>{idx}</button>
+                );
+              })
+            }
+          </div>
         </div>
       </div>
     );

@@ -1,10 +1,11 @@
 [screenshot]: https://github.com/rtobin/react-3dstuff/blob/master/images/carousel3D_sample.png
+[screencast]: https://github.com/rtobin/react-3dstuff/blob/master/images/screencast.png
 [portfolio]: http://www.ryantobin.space
 
 # React-3dstuff
 A 3D React carousel component.
 
-![sample][screenshot]
+![sample][screencast]
 
 Just wrap your collection of html tags with a <Carousel3D> tag and all the immediate children will make up the carousel.
 example:
