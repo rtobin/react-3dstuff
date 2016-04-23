@@ -88,10 +88,7 @@ export default class App extends React.Component {
           <img className={styles.slide}
             draggable="false"
             src="https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png"/>
-          <img className={styles.slide}
-            draggable="false"
-            src="https://upload.wikimedia.org/wikipedia/en/d/de/Barney_Gumble.png"/>
-
+          <iframe width="400" height="400" src="https://www.youtube.com/embed/LlALX5mBjQg?autoplay=1" frameBorder="0" allowFullScreen></iframe>
         </Carousel3D>
         <div className={styles.controls}>
           <form className={styles.slideNav} onSubmit={this._onSubmit.bind(this)}>
