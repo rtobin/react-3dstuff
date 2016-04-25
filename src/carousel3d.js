@@ -17,16 +17,15 @@ export default class Carousel3D extends React.Component {
 		super(props);
 		this.state = {
 			angle: 0,
+			atRest: true,
 			circumference: 0,
 			clickSafe: true,
-			jumpingToIndex: this.props.panelIndex,
-			dragging: false,
 			containerWidth: 0,
+			delta: [0, 0],
+			dragging: false,
+			jumpingToIndex: this.props.panelIndex,
       left: 0,
 			mouse: [0, 0],
-			delta: [0, 0],
-			omega: 0,
-			frictionFactor: 100,
       panelCount: 0,
       panelSize: 0,
 			radius: 0,
@@ -34,7 +33,6 @@ export default class Carousel3D extends React.Component {
 			thetaX: 0,
 			thetaY: 0,
       top: 0,
-			atRest: true
 		};
 		/*
 		* omega: angular velocity
@@ -67,16 +65,25 @@ export default class Carousel3D extends React.Component {
 	}
 
 	componentDidUpdate() {
+		let thetaX, thetaY;
+		if (this.props.orientation === 'horizontal') {
+			thetaX = 0;
+			thetaY = this.nearestPanelAngle();
+		} else {
+			thetaX = (-1) * this.nearestPanelAngle();
+			thetaY = 0;
+		}
+
 		if (!this.state.dragging && !this.state.atRest) {
 			this.setState({
-				thetaX: 0,
-				thetaY: this.nearestPanelAngle(),
+				thetaX: thetaX,
+				thetaY: thetaY,
 				atRest: true
 			});
 		} else if (this.state.jumpingToIndex){
 			this.setState({
-				thetaX: 0,
-				thetaY: this.nextPanelAngle(),
+				thetaX: thetaX,
+				thetaY: thetaY,
 				atRest: true,
 				jumpingToIndex: null
 			});
@@ -89,34 +96,40 @@ export default class Carousel3D extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			panelCount: nextProps.children.length
+			panelCount: nextProps.children.length,
+			jumpingToIndex: nextProps.panelIndex
 		});
 		this.setup();
-		if (nextProps.panelIndex !== this.state.currentPanelIndex) {
-			// this.goToPanel(nextProps.panelIndex);
-			this.state.jumpingToIndex = nextProps.panelIndex;
-		}
+
 	}
 
 	render() {
 		const self = this;
 		const children = React.Children.count(this.props.children) > 1 ? this.props.children : [this.props.children];
-		let style, angle;
+		let style, angle, rotateX, rotateY;
 		let [x, y] = this.state.mouse;
 
 		if (this.state.dragging) {
-			style = {
-				rotateX: (-1) * this.state.thetaX,
-				rotateY: this.state.thetaY
-			}
-		} else {
+			rotateX = (-1) * this.state.thetaX;
+			rotateY = this.state.thetaY;
 
+		} else {
+			debugger
 			angle = this.state.jumpingToIndex !== null ? this.nextPanelAngle() : this.nearestPanelAngle();
-			style = {
-				rotateX: spring(0, {stiffness: this.props.stiffness, damping:  this.props.damping} ),
-				rotateY: spring(angle, {stiffness: this.props.stiffness, damping: this.props.damping} ),
+
+			if (this.props.orientation === 'horizontal') {
+				rotateX = spring(0, { stiffness: this.props.stiffness, damping:  this.props.damping } );
+				rotateY = spring(angle, { stiffness: this.props.stiffness, damping: this.props.damping } );
+			} else {
+				rotateX = spring(angle, { stiffness: this.props.stiffness, damping: this.props.damping } );
+				rotateY = spring(0, { stiffness: this.props.stiffness, damping:  this.props.damping } );
 			}
 		}
+
+		style = {
+			rotateX: rotateX,
+			rotateY: rotateY
+		};
 
 		return (
 			<div className={['carousel3d', this.props.className || ''].join(' ')}
@@ -131,7 +144,15 @@ export default class Carousel3D extends React.Component {
 			          onClick={this.handleClick}>
 							<div className="carousel3d_list" ref="list" style={this.getCarouselStyles(rotateX, rotateY)}>
 								{
-									React.Children.map(children, this.makePanelItem(child, idx));
+									React.Children.map(children, function(child, idx) {
+										return (
+											<div className="carousel3d_panel"
+												style={self.getPanelStyles(idx)}
+												key={idx}>
+												{child}
+											</div>
+										)
+									})
 								}
 				  		</div>
 						</div>
@@ -204,16 +225,18 @@ export default class Carousel3D extends React.Component {
 		if (this.props.orientation === 'horizontal') {
 			return Math.round(this.state.thetaY / this.state.angle) * this.state.angle;
 		} else {
-			return Math.round(this.state.thetaX / this.state.angle) * this.state.angle;
+			return (-1) * Math.round(this.state.thetaX / this.state.angle) * this.state.angle;
 		}
 	}
 
 	nextPanelAngle() {
-		if (typeof this.state.jumpingToIndex === 'number'){
+		let angle;
+
+		if (typeof this.state.jumpingToIndex === 'number') {
 			return (-1) * this.state.angle * this.state.jumpingToIndex;
 		}
 
-		let angle = this.props.orientation === 'horizontal' ? this.state.thetaY : this.state.thetaY;
+		angle = this.props.orientation === 'horizontal' ? this.state.thetaY : this.state.thetaX;
 
 		if (this.state.jumpingToIndex === 'next') {
 			return angle - this.state.angle;
@@ -300,7 +323,7 @@ export default class Carousel3D extends React.Component {
 					self.setState({
 						mouse: mouse,
 						thetaX: (self.state.thetaX + deltaThetaX) % 360,
-						thetaY: (self.state.thetaY + deltaThetaY) % 360,
+						thetaY: (self.state.thetaY - deltaThetaY) % 360,
 						atRest: false
 					});
 		    }
@@ -321,7 +344,7 @@ export default class Carousel3D extends React.Component {
 	}
 
 	getMouseEvents() {
-    var self = this;
+    const self = this;
 
     if (this.props.dragging === false) {
       return null;
@@ -329,7 +352,7 @@ export default class Carousel3D extends React.Component {
 
     return {
       onMouseDown(e) {
-				// console.log('mouse down');
+				console.log('mouse down');
 				self.setState({
 		      dragging: true,
 					jumpingToIndex: null,
@@ -337,7 +360,7 @@ export default class Carousel3D extends React.Component {
 		    });
       },
       onMouseMove(e) {
-				// console.log('mouse move');
+				console.log('mouse move');
 				if (!self.state.dragging) {
           return;
         }
@@ -358,15 +381,15 @@ export default class Carousel3D extends React.Component {
 		    }
       },
 			onDragStart(e) {
-				// console.log('dragging');
+				console.log('dragging');
 				return false;
 			},
       onMouseUp(e) {
-				// console.log('mouse up');
+				console.log('mouse up');
 				self.setState({ dragging: false });
       },
       onMouseLeave(e) {
-				// console.log('mouse leave');
+				console.log('mouse leave');
 				self.setState({ dragging: false });
       }
     }
