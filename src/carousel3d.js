@@ -66,21 +66,30 @@ export default class Carousel3D extends React.Component {
 
 	componentDidUpdate() {
 		let thetaX, thetaY;
-		if (this.props.orientation === 'horizontal') {
-			thetaX = 0;
-			thetaY = this.nearestPanelAngle();
-		} else {
-			thetaX = (-1) * this.nearestPanelAngle();
-			thetaY = 0;
-		}
 
 		if (!this.state.dragging && !this.state.atRest) {
+			if (this.props.orientation === 'horizontal') {
+				thetaX = 0;
+				thetaY = this.nearestPanelAngle();
+			} else {
+				thetaY = 0;
+				thetaX = (-1) * this.nearestPanelAngle();
+			}
+
 			this.setState({
 				thetaX: thetaX,
 				thetaY: thetaY,
 				atRest: true
 			});
-		} else if (this.state.jumpingToIndex){
+		} else if (this.state.jumpingToIndex) {
+			if (this.props.orientation === 'horizontal') {
+				thetaX = 0;
+				thetaY = this.nextPanelAngle();
+			} else {
+				thetaY = 0;
+				thetaX = (-1) * this.nextPanelAngle();
+			}
+
 			this.setState({
 				thetaX: thetaX,
 				thetaY: thetaY,
@@ -114,7 +123,6 @@ export default class Carousel3D extends React.Component {
 			rotateY = this.state.thetaY;
 
 		} else {
-			debugger
 			angle = this.state.jumpingToIndex !== null ? this.nextPanelAngle() : this.nearestPanelAngle();
 
 			if (this.props.orientation === 'horizontal') {
